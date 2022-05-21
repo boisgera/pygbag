@@ -581,14 +581,7 @@ async function fshandler(VM) {
 const modularized = (typeof python311 != 'undefined')
 
 
-function pythonvm(vterm, config) {
-    var canvasid = "canvas";
-    var autorun = null
-
-    if (config){
-        canvasid = config._sdl2
-        autorun = config.archive
-    }
+function pythonvm(canvasid, vterm) {
 
     console.log(__FILE__, "canvas found at "+ canvasid)
 
@@ -719,13 +712,8 @@ function pythonvm(vterm, config) {
             VM.APK = VM.arguments[0]
             console.log(__FILE__,"preRun1",VM.arguments)
         } else {
-            if (autorun) {
-                VM.APK = autorun
-                console.log("AUTORUN", VM.APK )
-            } else {
-                console.log("no source given, interactive prompt requested")
-                VM.APK = "org.python"
-            }
+            console.log("no source given, interactive prompt requested")
+            VM.APK = "org.python"
             VM.arguments.push(VM.APK)
         }
 
