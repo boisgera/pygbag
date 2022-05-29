@@ -210,7 +210,7 @@ register(on_click)
 // READLINE ========================================================
 
 
-var readline = { last_cx : -1 , index : 0 }
+var readline = { last_cx : -1 , index : 0, history : ["help()"] }
 
 
 readline.complete = function (line) {
@@ -220,6 +220,8 @@ readline.complete = function (line) {
     python.PyRun_SimpleString(line + "\n")
 
 }
+
+window.readline = readline
 
 
 // Xterm Sixel ======================================================
@@ -233,6 +235,7 @@ export class WasmTerminal {
 
         this.xterm = new Terminal(
             {
+                allowTransparency: true,
                 scrollback: 10000,
                 fontSize: 14,
                 theme: { background: '#1a1c1f' },
@@ -581,7 +584,14 @@ async function fshandler(VM) {
 const modularized = (typeof python311 != 'undefined')
 
 
-function pythonvm(canvasid, vterm) {
+function pythonvm(vterm, config) {
+    var canvasid = "canvas"
+    var autorun = null
+
+    if (config){
+        canvasid = config._sdl2
+        autorun = config.archive
+    }
 
     console.log(__FILE__, "canvas found at "+ canvasid)
 
@@ -712,8 +722,13 @@ function pythonvm(canvasid, vterm) {
             VM.APK = VM.arguments[0]
             console.log(__FILE__,"preRun1",VM.arguments)
         } else {
-            console.log("no source given, interactive prompt requested")
-            VM.APK = "org.python"
+            if (autorun) {
+                VM.APK = autorun
+                console.log("AUTORUN", VM.APK )
+            } else {
+                console.log("no source given, interactive prompt requested")
+                VM.APK = "org.python"
+            }
             VM.arguments.push(VM.APK)
         }
 
@@ -749,8 +764,9 @@ function pythonvm(canvasid, vterm) {
 
         locateFile : function(path, prefix) {
             if (path == "main.data") {
-                console.log(__FILE__,"locateData: "+path+' '+prefix);
-                return `python311/${path}`;
+                const url = (config.cdn || "" )+`python311/${path}`
+                console.log(__FILE__,"locateData: "+path+' '+prefix, "->", url);
+                return url;
             } else {
                 console.log(__FILE__,"locateFile: "+path+' '+prefix);
             }
@@ -824,7 +840,7 @@ function pythonvm(canvasid, vterm) {
         window.Module = Module
         const jswasmloader=document.createElement('script')
         jswasmloader.setAttribute("type","text/javascript")
-        jswasmloader.setAttribute("src", "python311/main.js")
+        jswasmloader.setAttribute("src", (config.cdn || "")+ "python311/main.js")
         jswasmloader.setAttribute('async', true);
         document.getElementsByTagName("head")[0].appendChild(jswasmloader)
 
