@@ -9,8 +9,8 @@
     Authors : {{cookiecutter.authors}}
     SPDX-License-Identifier: {{cookiecutter.spdx}}
 
-    {%- if cookiecutter.icon != "" -%}
-    <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
+    {%- if cookiecutter.comment != "" -%}
+{{cookiecutter.comment}}
     {% endif %}
 
 -->
@@ -22,6 +22,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
 
+    <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
     <link rel="stylesheet" href="{{cookiecutter.cdn}}/styles.css"/>
 
     <link rel="stylesheet" href="{{cookiecutter.cdn}}/xtermjsixel/xterm.css" />
@@ -193,19 +194,11 @@ style="width: 100%;"
     async function custom_site(vfs) {
         // python and all filesystems are ready.
         console.log(__FILE__, "custom_site Begin")
-
         python.readline.history = []
-
-        //_rcp("current.py", "/data/data/org.python/assets/test.py")
-
-
-        frame_online(  Module.arguments[0]+".html" )
-
 
 
 // PyConfig
 // https://docs.python.org/dev/c-api/init_config.html
-
 
 
         // your needs to the minimal pyconfig
@@ -290,11 +283,7 @@ if os.path.isfile("/data/data/pythonrc.py"):
 
 
 
-
-
     window.onload = function () {
-        // nothing is ready.
-
 
         var wasmterm
 

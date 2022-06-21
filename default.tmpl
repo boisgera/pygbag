@@ -5,14 +5,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+<!--
+    Pygbag Version : {{cookiecutter.version}}
+    CDN URL : {{cookiecutter.cdn}}
 
-    <!-- <base href="{{cookiecutter.cdn}}" target="_blank"> -->
-    <!-- <link rel="icon" type="image/png" href="favicon.png" sizes="16x16"> -->
+    Title   : {{cookiecutter.title}}
+    Folder  : {{cookiecutter.directory}}
+    Authors : {{cookiecutter.authors}}
+    SPDX-License-Identifier: {{cookiecutter.spdx}}
+
+    {%- if cookiecutter.comment != "" -%}
+{{cookiecutter.comment}}
+    {% endif %}
+
+-->
+    <link rel="icon" type="image/png" href="{{cookiecutter.cdn}}/favicon.png" sizes="16x16" />
 
     <link rel="stylesheet" href="{{cookiecutter.cdn}}/styles.css"/>
-
     <link rel="stylesheet" href="{{cookiecutter.cdn}}/xtermjsixel/xterm.css" />
     <link rel="stylesheet" href="{{cookiecutter.cdn}}/xtermjsixel/style.css"/>
+
     <style>
         #status {
             display: inline-block;
@@ -171,12 +184,10 @@ height="88%" width="470px"
 
         python.readline.history = []
 
-        //_rcp("current.py", "/data/data/org.python/assets/test.py")
-
-
-        frame_online(  Module.arguments[0]+".html" )
-
-
+        if ( Module.arguments[0] != "./this.program" ) {
+            console.warn("[",Module.arguments[0],"]")
+            frame_online(  Module.arguments[0]+".html" )
+        }
 
 // PyConfig
 // https://docs.python.org/dev/c-api/init_config.html
@@ -237,8 +248,6 @@ if os.path.isfile("/data/data/pythonrc.py"):
 
         if (await _rcp("{{cookiecutter.cdn}}/pythonrc.py","/data/data/pythonrc.py")) {
 
-            // FIXME: sometimes runtime is called without overlayfs ready.
-
             if (python.APK != "org.python") {
                 if (config.autorun) {
                     if (await _rcp(`${python.APK}.py`, `/data/data/${python.APK}/assets/main.py`)) {
@@ -262,13 +271,7 @@ if os.path.isfile("/data/data/pythonrc.py"):
     }
 
 
-
-
-
     window.onload = function () {
-        // nothing is ready.
-
-
         var wasmterm
 
         if (!config.xtermjs) {
@@ -283,7 +286,6 @@ if os.path.isfile("/data/data/pythonrc.py"):
         }
 
         pythonvm(wasmterm, config)
-
 
     }
 
